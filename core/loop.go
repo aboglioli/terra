@@ -5,7 +5,7 @@ import "time"
 type Loop struct {
 	fps      int
 	onUpdate func(float64)
-	stop     chan bool
+	done     chan bool
 }
 
 func (l *Loop) Start() {
@@ -22,7 +22,7 @@ func (l *Loop) Start() {
 			timeStart = now
 
 			l.onUpdate(delta)
-		case <-l.stop:
+		case <-l.done:
 			ticker.Stop()
 			return
 		}
@@ -30,13 +30,13 @@ func (l *Loop) Start() {
 }
 
 func (l *Loop) Stop() {
-	l.stop <- true
+	l.done <- true
 }
 
 func NewLoop(fps int, onUpdate func(float64)) *Loop {
 	return &Loop{
 		fps:      fps,
 		onUpdate: onUpdate,
-		stop:     make(chan bool),
+		done:     make(chan bool),
 	}
 }

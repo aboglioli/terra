@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -22,8 +21,6 @@ func TestLoop(t *testing.T) {
 	go loop.Start()
 	<-done
 	loop.Stop()
-
-	fmt.Println(frames, duration)
 
 	if duration < 100 || duration > 101 {
 		t.Errorf("%d frames processed in %.2fms", frames, duration)
