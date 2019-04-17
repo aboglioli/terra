@@ -4,7 +4,7 @@ import "github.com/veandco/go-sdl2/sdl"
 
 type Video struct {
 	window  *sdl.Window
-	Surface *sdl.Surface
+	surface *sdl.Surface
 }
 
 func InitSDL() {
@@ -27,8 +27,12 @@ func InitVideo(title string, width, height int32) *Video {
 
 	return &Video{
 		window:  window,
-		Surface: surface,
+		surface: surface,
 	}
+}
+
+func (v *Video) Surface() *sdl.Surface {
+	return v.surface
 }
 
 func (v *Video) Update() {

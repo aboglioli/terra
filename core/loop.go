@@ -5,14 +5,14 @@ import "time"
 type Loop struct {
 	fps      int
 	onUpdate func(float64)
-	done     chan bool
+	done     bool
 }
 
 func NewLoop(fps int, onUpdate func(float64)) *Loop {
 	return &Loop{
 		fps:      fps,
 		onUpdate: onUpdate,
-		done:     make(chan bool),
+		done:     false,
 	}
 }
 
@@ -22,21 +22,19 @@ func (l *Loop) Start() {
 
 	timeStart := time.Now().UnixNano()
 
-	for {
-		select {
-		case <-ticker.C:
-			now := time.Now().UnixNano()
-			delta := float64(now-timeStart) / float64(time.Millisecond)
-			timeStart = now
-
-			l.onUpdate(delta)
-		case <-l.done:
-			ticker.Stop()
+	for range ticker.C {
+		if l.done {
 			return
 		}
+
+		now := time.Now().UnixNano()
+		delta := float64(now-timeStart) / float64(time.Millisecond)
+		timeStart = now
+
+		l.onUpdate(delta)
 	}
 }
 
 func (l *Loop) Stop() {
-	l.done <- true
+	l.done = true
 }

@@ -34,24 +34,25 @@ func main() {
 	// }
 
 	loop := core.NewLoop(60, func(d float64) {
-		video.Surface.FillRect(nil, 0)
+		surface := video.Surface()
+
+		surface.FillRect(nil, 0)
 		rect := sdl.Rect{x, y, 64, 64}
-		video.Surface.FillRect(&rect, 0xffff0000)
-		video.Surface.FillRect(&sdl.Rect{x, y, 32, 32}, 0xff00ff00)
+		surface.FillRect(&rect, 0xffff0000)
+		surface.FillRect(&sdl.Rect{x, y, 32, 32}, 0xff00ff00)
 
 		video.Update()
-
 		events.HandleEvents()
 	})
 
 	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
 		if e.Keysym.Sym == sdl.K_ESCAPE {
-			go loop.Stop()
+			loop.Stop()
 		}
 	})
 
 	events.AddQuitEvent(func() {
-		go loop.Stop()
+		loop.Stop()
 	})
 
 	events.AddMouseMotionEvent(func(t *sdl.MouseMotionEvent) {
