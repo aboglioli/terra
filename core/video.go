@@ -7,11 +7,16 @@ type Video struct {
 	Surface *sdl.Surface
 }
 
-func InitVideo(title string, width, height int32) *Video {
-	// Initialize SDL
+func InitSDL() {
 	err := sdl.Init(sdl.INIT_EVERYTHING)
 	check(err)
+}
 
+func DestroySDL() {
+	sdl.Quit()
+}
+
+func InitVideo(title string, width, height int32) *Video {
 	// Create window
 	window, err := sdl.CreateWindow(title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_SHOWN)
 	check(err)
@@ -32,5 +37,4 @@ func (v *Video) Update() {
 
 func (v *Video) Destroy() {
 	v.window.Destroy()
-	sdl.Quit()
 }

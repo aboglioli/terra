@@ -1,28 +1,31 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/aboglioli/terra/core"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 func main() {
+	core.InitSDL()
+	defer core.DestroySDL()
 	video := core.InitVideo("Terra", 800, 600)
 	defer video.Destroy()
 	events := core.NewEventPool()
 
 	var x, y int32 = 0, 0
-	events.AddKeyboardEvent(sdl.K_a, func() {
-		x -= 64
-	})
-	events.AddKeyboardEvent(sdl.K_d, func() {
-		x += 64
-	})
-	events.AddKeyboardEvent(sdl.K_w, func() {
-		y -= 64
-	})
-	events.AddKeyboardEvent(sdl.K_s, func() {
-		y += 64
+
+	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
+		switch e.Keysym.Sym {
+		case sdl.K_a:
+			x -= 64
+		case sdl.K_d:
+			x += 64
+		case sdl.K_w:
+			y -= 64
+		case sdl.K_s:
+			y += 64
+		}
 	})
 
 	// state := &core.GameState{
@@ -34,19 +37,31 @@ func main() {
 		video.Surface.FillRect(nil, 0)
 		rect := sdl.Rect{x, y, 64, 64}
 		video.Surface.FillRect(&rect, 0xffff0000)
+		video.Surface.FillRect(&sdl.Rect{x, y, 32, 32}, 0xff00ff00)
 
 		video.Update()
 
 		events.HandleEvents()
-		// fmt.Println(d)
 	})
 
-	events.AddKeyboardEvent(sdl.K_ESCAPE, func() {
-		go loop.Stop()
+	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
+		if e.Keysym.Sym == sdl.K_ESCAPE {
+			go loop.Stop()
+		}
 	})
 
 	events.AddQuitEvent(func() {
 		go loop.Stop()
+	})
+
+	events.AddMouseMotionEvent(func(t *sdl.MouseMotionEvent) {
+		fmt.Printf("[%d ms] MouseMotion\ttype:%d\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n",
+			t.Timestamp, t.Type, t.Which, t.X, t.Y, t.XRel, t.YRel)
+	})
+
+	events.AddMouseButtonEvent(func(t *sdl.MouseButtonEvent) {
+		fmt.Printf("[%d ms] MouseButton\ttype:%d\tid:%d\tx:%d\ty:%d\tbutton:%d\tstate:%d\n",
+			t.Timestamp, t.Type, t.Which, t.X, t.Y, t.Button, t.State)
 	})
 
 	loop.Start()
