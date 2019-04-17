@@ -1,4 +1,4 @@
-package entity
+package core
 
 type Renderer interface {
 	Render(delta float64) error

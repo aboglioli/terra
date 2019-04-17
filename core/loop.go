@@ -8,6 +8,14 @@ type Loop struct {
 	done     chan bool
 }
 
+func NewLoop(fps int, onUpdate func(float64)) *Loop {
+	return &Loop{
+		fps:      fps,
+		onUpdate: onUpdate,
+		done:     make(chan bool),
+	}
+}
+
 func (l *Loop) Start() {
 	t := 1e9 / float64(l.fps)
 	ticker := time.NewTicker(time.Duration(t) * time.Nanosecond)
@@ -31,12 +39,4 @@ func (l *Loop) Start() {
 
 func (l *Loop) Stop() {
 	l.done <- true
-}
-
-func NewLoop(fps int, onUpdate func(float64)) *Loop {
-	return &Loop{
-		fps:      fps,
-		onUpdate: onUpdate,
-		done:     make(chan bool),
-	}
 }
