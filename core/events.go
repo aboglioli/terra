@@ -1,23 +1,19 @@
 package core
 
 import (
+	"fmt"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-type keyboardEvent struct {
-	key sdl.Keycode
-	fn  func()
-}
-
 type EventPool struct {
 	quitEvents     []func()
-	keyboardEvents []keyboardEvent
+	keyboardEvents map[sdl.Keycode][]func()
 }
 
 func NewEventPool() *EventPool {
 	return &EventPool{
 		quitEvents:     make([]func(), 0),
-		keyboardEvents: make([]keyboardEvent, 0),
+		keyboardEvents: make(map[sdl.Keycode][]func()),
 	}
 }
 
@@ -26,8 +22,13 @@ func (ep *EventPool) AddQuitEvent(fn func()) {
 }
 
 func (ep *EventPool) AddKeyboardEvent(key sdl.Keycode, fn func()) {
-	e := keyboardEvent{key, fn}
-	ep.keyboardEvents = append(ep.keyboardEvents, e)
+	ke := ep.keyboardEvents
+
+	if ke[key] == nil {
+		ke[key] = make([]func(), 0)
+	}
+
+	ke[key] = append(ke[key], fn)
 }
 
 func (ep *EventPool) HandleEvents() {
@@ -35,10 +36,11 @@ func (ep *EventPool) HandleEvents() {
 		switch e := event.(type) {
 		case *sdl.KeyboardEvent:
 			if e.Type == sdl.KEYDOWN {
-				sym := e.Keysym.Sym
-				for _, ke := range ep.keyboardEvents {
-					if ke.key == sym {
-						ke.fn()
+				key := e.Keysym.Sym
+
+				if eventsByKey, ok := ep.keyboardEvents[key]; ok {
+					for _, ke := range eventsByKey {
+						ke()
 					}
 				}
 			}
