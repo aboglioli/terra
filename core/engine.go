@@ -5,6 +5,7 @@ import "github.com/veandco/go-sdl2/sdl"
 type engine struct {
 	window   *sdl.Window
 	renderer *sdl.Renderer
+	events   *EventPool
 }
 
 var instance *engine
@@ -21,9 +22,13 @@ func InitEngine(title string, width, height int32) {
 	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	check(err)
 
+	// Create event pool
+	events := NewEventPool()
+
 	instance = &engine{
 		window:   window,
 		renderer: renderer,
+		events:   events,
 	}
 }
 
@@ -39,4 +44,8 @@ func Window() *sdl.Window {
 
 func Renderer() *sdl.Renderer {
 	return instance.renderer
+}
+
+func Events() *EventPool {
+	return instance.events
 }

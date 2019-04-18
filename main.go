@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/aboglioli/terra/core"
+	"github.com/aboglioli/terra/entity"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -10,7 +11,7 @@ func main() {
 	core.InitEngine("Terra", 1024, 768)
 	defer core.DestroyEngine()
 
-	events := core.NewEventPool()
+	events := core.Events()
 
 	var x, y int32 = 0, 0
 
@@ -29,14 +30,33 @@ func main() {
 
 	renderer := core.Renderer()
 
+	var terrain [64][64]*entity.Grass
+
+	fmt.Println("Making terrain")
+	for i := 0; i < 64; i++ {
+		for j := 0; j < 64; j++ {
+			terrain[i][j] = entity.NewGrass()
+		}
+	}
+	fmt.Println("Ready")
+
 	loop := core.NewLoop(60, func(d float64) {
 		// Clear screen
 		renderer.SetDrawColor(0, 0, 0, 0)
 		renderer.Clear()
 
-		// Draw
+		// Draw terrain
+		for i := (0); i < 64; i++ {
+			for j := 0; j < 64; j++ {
+				grass := terrain[i][j]
+				grassTexture := grass.Render(d)
+				renderer.Copy(grassTexture, &sdl.Rect{0, 0, 32, 32}, &sdl.Rect{int32(i * 32), int32(j * 32), 32, 32})
+			}
+		}
+
+		// Draw character
 		renderer.SetDrawColor(255, 0, 0, 255)
-		renderer.FillRect(&sdl.Rect{x, y, 64, 64})
+		renderer.FillRect(&sdl.Rect{x, y, 32, 32})
 
 		// Update
 		renderer.Present()
@@ -53,16 +73,6 @@ func main() {
 
 	events.AddQuitEvent(func() {
 		loop.Stop()
-	})
-
-	events.AddMouseMotionEvent(func(t *sdl.MouseMotionEvent) {
-		fmt.Printf("[%d ms] MouseMotion\ttype:%d\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n",
-			t.Timestamp, t.Type, t.Which, t.X, t.Y, t.XRel, t.YRel)
-	})
-
-	events.AddMouseButtonEvent(func(t *sdl.MouseButtonEvent) {
-		fmt.Printf("[%d ms] MouseButton\ttype:%d\tid:%d\tx:%d\ty:%d\tbutton:%d\tstate:%d\n",
-			t.Timestamp, t.Type, t.Which, t.X, t.Y, t.Button, t.State)
 	})
 
 	loop.Start()
