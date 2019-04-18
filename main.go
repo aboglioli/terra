@@ -7,10 +7,9 @@ import (
 )
 
 func main() {
-	core.InitSDL()
-	defer core.DestroySDL()
-	video := core.InitVideo("Terra", 800, 600)
-	defer video.Destroy()
+	core.InitSystems("Terra", 1024, 768)
+	defer core.DestroySystems()
+
 	events := core.NewEventPool()
 
 	var x, y int32 = 0, 0
@@ -33,15 +32,16 @@ func main() {
 	// 	Events: events,
 	// }
 
-	loop := core.NewLoop(60, func(d float64) {
-		surface := video.Surface()
+	surface := core.Surface()
 
+	loop := core.NewLoop(60, func(d float64) {
 		surface.FillRect(nil, 0)
+
 		rect := sdl.Rect{x, y, 64, 64}
 		surface.FillRect(&rect, 0xffff0000)
 		surface.FillRect(&sdl.Rect{x, y, 32, 32}, 0xff00ff00)
 
-		video.Update()
+		core.Update()
 		events.HandleEvents()
 	})
 
