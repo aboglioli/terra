@@ -2,8 +2,8 @@ package entity
 
 import (
 	"github.com/aboglioli/terra/core"
+	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
-	"math/rand"
 )
 
 type Grass struct {
@@ -14,21 +14,9 @@ type Grass struct {
 func NewGrass() *Grass {
 	renderer := core.Renderer()
 
-	texture, _ := renderer.CreateTexture(sdl.PIXELFORMAT_RGBA8888, sdl.TEXTUREACCESS_TARGET, 32, 32)
-
-	renderer.SetRenderTarget(texture)
-	renderer.SetDrawColor(0, 128, 0, 255)
-	renderer.Clear()
-
-	renderer.SetDrawColor(0, 200, 0, 255)
-
-	for i := 0; i < 10; i++ {
-		x := rand.Int31n(32)
-		y := rand.Int31n(32)
-		renderer.FillRect(&sdl.Rect{x, y, 1, 1})
-	}
-
-	renderer.SetRenderTarget(nil)
+	image, _ := img.Load("./assets/map.png")
+	defer image.Free()
+	texture, _ := renderer.CreateTextureFromSurface(image)
 
 	return &Grass{
 		Square: &core.Square{

@@ -1,6 +1,9 @@
 package core
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"github.com/veandco/go-sdl2/img"
+	"github.com/veandco/go-sdl2/sdl"
+)
 
 type engine struct {
 	window   *sdl.Window
@@ -11,8 +14,11 @@ type engine struct {
 var instance *engine
 
 func InitEngine(title string, width, height int32) {
+	// Initialize SDL and dependencies
 	err := sdl.Init(sdl.INIT_EVERYTHING)
 	check(err)
+
+	img.Init(img.INIT_PNG)
 
 	// Create window
 	window, err := sdl.CreateWindow(title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_SHOWN)
@@ -35,6 +41,7 @@ func InitEngine(title string, width, height int32) {
 func DestroyEngine() {
 	instance.renderer.Destroy()
 	instance.window.Destroy()
+	img.Quit()
 	sdl.Quit()
 }
 
