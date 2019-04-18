@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	core.InitSystems("Terra", 1024, 768)
-	defer core.DestroySystems()
+	core.InitEngine("Terra", 1024, 768)
+	defer core.DestroyEngine()
 
 	events := core.NewEventPool()
 
@@ -27,21 +27,21 @@ func main() {
 		}
 	})
 
-	// state := &core.GameState{
-	// 	Video:  video,
-	// 	Events: events,
-	// }
-
-	surface := core.Surface()
+	renderer := core.Renderer()
 
 	loop := core.NewLoop(60, func(d float64) {
-		surface.FillRect(nil, 0)
+		// Clear screen
+		renderer.SetDrawColor(0, 0, 0, 0)
+		renderer.Clear()
 
-		rect := sdl.Rect{x, y, 64, 64}
-		surface.FillRect(&rect, 0xffff0000)
-		surface.FillRect(&sdl.Rect{x, y, 32, 32}, 0xff00ff00)
+		// Draw
+		renderer.SetDrawColor(255, 0, 0, 255)
+		renderer.FillRect(&sdl.Rect{x, y, 64, 64})
 
-		core.Update()
+		// Update
+		renderer.Present()
+
+		// Handle events
 		events.HandleEvents()
 	})
 

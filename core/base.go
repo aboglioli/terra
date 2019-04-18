@@ -1,16 +1,8 @@
 package core
 
-type Renderer interface {
-	Render(delta float64) error
-}
-
-type Updater interface {
-	Update(delta float64) error
-}
-
 type Entity interface {
-	Renderer
-	Updater
+	Update(delta float64) error
+	Render(delta float64) error
 }
 
 type Square struct {

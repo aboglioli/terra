@@ -2,14 +2,14 @@ package core
 
 import "github.com/veandco/go-sdl2/sdl"
 
-type system struct {
-	window  *sdl.Window
-	surface *sdl.Surface
+type engine struct {
+	window   *sdl.Window
+	renderer *sdl.Renderer
 }
 
-var instance *system
+var instance *engine
 
-func InitSystems(title string, width, height int32) {
+func InitEngine(title string, width, height int32) {
 	err := sdl.Init(sdl.INIT_EVERYTHING)
 	check(err)
 
@@ -18,16 +18,17 @@ func InitSystems(title string, width, height int32) {
 	check(err)
 
 	// Get main surface
-	surface, err := window.GetSurface()
+	renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	check(err)
 
-	instance = &system{
-		window:  window,
-		surface: surface,
+	instance = &engine{
+		window:   window,
+		renderer: renderer,
 	}
 }
 
-func DestroySystems() {
+func DestroyEngine() {
+	instance.renderer.Destroy()
 	instance.window.Destroy()
 	sdl.Quit()
 }
@@ -36,10 +37,6 @@ func Window() *sdl.Window {
 	return instance.window
 }
 
-func Surface() *sdl.Surface {
-	return instance.surface
-}
-
-func Update() {
-	instance.window.UpdateSurface()
+func Renderer() *sdl.Renderer {
+	return instance.renderer
 }
