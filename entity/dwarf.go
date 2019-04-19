@@ -14,7 +14,7 @@ func NewDwarf() *Dwarf {
 
 	return &Dwarf{
 		texture: &core.BoundTexture{
-			Bound:   &sdl.Rect{64, 96, core.Tile, core.Tile},
+			Bound:   &sdl.Rect{32, 0, core.Tile, core.Tile},
 			Texture: texture,
 		},
 	}

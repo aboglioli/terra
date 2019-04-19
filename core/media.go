@@ -19,7 +19,7 @@ func loadTextures(renderer *sdl.Renderer) map[string]*sdl.Texture {
 	texture, _ := loadTexture(renderer, "./assets/map.png")
 	m["terrain"] = texture
 
-	texture, _ = loadTexture(renderer, "./assets/characters/Dwarves/dwarves.png")
+	texture, _ = loadTexture(renderer, "./assets/characters.png")
 	m["dwarves"] = texture
 
 	return m
