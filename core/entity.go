@@ -2,22 +2,21 @@ package core
 
 import "github.com/veandco/go-sdl2/sdl"
 
+type BoundTexture struct {
+	Bound   *sdl.Rect
+	Texture *sdl.Texture
+}
+
 type Entity interface {
-	Update(delta float64) error
-	Render(delta float64) error
+	Update(delta float64)
+	Render(delta float64) *BoundTexture
 }
 
-type Square struct {
-	X      int
-	Y      int
-	Width  int
-	Height int
-}
+type Square sdl.Rect
 
-func (s *Square) Render(d float64) *sdl.Texture {
+func (s *Square) Render(d float64) *BoundTexture {
 	return nil
 }
 
-func (s *Square) Update(d float64) error {
-	return nil
+func (s *Square) Update(d float64) {
 }

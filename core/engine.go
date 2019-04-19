@@ -9,7 +9,7 @@ type engine struct {
 	window   *sdl.Window
 	renderer *sdl.Renderer
 	events   *EventPool
-	media    map[string]*BoundTexture
+	textures map[string]*sdl.Texture
 }
 
 var instance *engine
@@ -33,13 +33,13 @@ func InitEngine(title string, width, height int32) {
 	events := NewEventPool()
 
 	// Load media
-	media := LoadMedia(renderer)
+	textures := loadTextures(renderer)
 
 	instance = &engine{
 		window:   window,
 		renderer: renderer,
 		events:   events,
-		media:    media,
+		textures: textures,
 	}
 }
 
@@ -62,6 +62,7 @@ func Events() *EventPool {
 	return instance.events
 }
 
-func Media() map[string]*BoundTexture {
-	return instance.media
+func Texture(key string) (*sdl.Texture, bool) {
+	texture, ok := instance.textures[key]
+	return texture, ok
 }

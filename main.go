@@ -2,17 +2,12 @@ package main
 
 import (
 	"github.com/aboglioli/terra/core"
+	"github.com/aboglioli/terra/entity"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const (
-	title  = "Terra"
-	width  = 1024
-	height = 768
-)
-
 func main() {
-	core.InitEngine(title, width, height)
+	core.InitEngine(core.Title, core.Width, core.Height)
 	defer core.DestroyEngine()
 
 	events := core.Events()
@@ -22,19 +17,26 @@ func main() {
 	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
 		switch e.Keysym.Sym {
 		case sdl.K_a:
-			x -= 16
+			x -= core.Tile
 		case sdl.K_d:
-			x += 16
+			x += core.Tile
 		case sdl.K_w:
-			y -= 16
+			y -= core.Tile
 		case sdl.K_s:
-			y += 16
+			y += core.Tile
 		}
 	})
 
 	renderer := core.Renderer()
 
-	media := core.Media()
+	var grasses [60][60]core.Entity
+	for i := 0; i < 60; i++ {
+		for j := 0; j < 60; j++ {
+			grasses[i][j] = entity.NewGrass()
+		}
+	}
+
+	dwarf := entity.NewDwarf()
 
 	loop := core.NewLoop(60, func(d float64) {
 		// Clear screen
@@ -42,19 +44,17 @@ func main() {
 		renderer.Clear()
 
 		// Draw terrain
-		for i := (0); i < 64; i++ {
-			for j := 0; j < 64; j++ {
-				grass := media["grass1"]
-				renderer.Copy(grass.Texture, grass.Bound, &sdl.Rect{int32(i * 16), int32(j * 16), 16, 16})
+		for i := 0; i < 60; i++ {
+			for j := 0; j < 60; j++ {
+				grass := grasses[i][j]
+				texture := grass.Render(d)
+				renderer.Copy(texture.Texture, texture.Bound, &sdl.Rect{int32(i * core.Tile), int32(j * core.Tile), core.Tile, core.Tile})
 			}
 		}
 
-		totem := media["totem"]
-		renderer.Copy(totem.Texture, totem.Bound, &sdl.Rect{128, 128, 16, 16})
-
 		// Draw character
-		renderer.SetDrawColor(255, 0, 0, 255)
-		renderer.FillRect(&sdl.Rect{x, y, 16, 16})
+		texture := dwarf.Render(d)
+		renderer.Copy(texture.Texture, texture.Bound, &sdl.Rect{x, y, core.Tile, core.Tile})
 
 		// Update
 		renderer.Present()

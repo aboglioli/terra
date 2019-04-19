@@ -5,29 +5,22 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-type BoundTexture struct {
-	Bound   *sdl.Rect
-	Texture *sdl.Texture
-}
-
-func LoadMedia(renderer *sdl.Renderer) map[string]*BoundTexture {
-	m := make(map[string]*BoundTexture)
-
-	mapImage, err := img.Load("./assets/map.png")
+func loadTexture(renderer *sdl.Renderer, path string) (*sdl.Texture, error) {
+	mapImage, err := img.Load(path)
 	check(err)
 	defer mapImage.Free()
 
-	texture, _ := renderer.CreateTextureFromSurface(mapImage)
+	return renderer.CreateTextureFromSurface(mapImage)
+}
 
-	m["grass1"] = &BoundTexture{
-		Bound:   &sdl.Rect{0, 0, 16, 16},
-		Texture: texture,
-	}
+func loadTextures(renderer *sdl.Renderer) map[string]*sdl.Texture {
+	m := make(map[string]*sdl.Texture)
 
-	m["totem"] = &BoundTexture{
-		Bound:   &sdl.Rect{96, 0, 16, 16},
-		Texture: texture,
-	}
+	texture, _ := loadTexture(renderer, "./assets/map.png")
+	m["terrain"] = texture
+
+	texture, _ = loadTexture(renderer, "./assets/characters/Dwarves/dwarves.png")
+	m["dwarves"] = texture
 
 	return m
 }

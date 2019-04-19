@@ -2,37 +2,31 @@ package entity
 
 import (
 	"github.com/aboglioli/terra/core"
-	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
+	"math/rand"
 )
 
 type Grass struct {
-	*core.Square
-	texture *sdl.Texture
+	texture *core.BoundTexture
 }
 
 func NewGrass() *Grass {
-	renderer := core.Renderer()
+	texture, _ := core.Texture("terrain")
 
-	image, _ := img.Load("./assets/map.png")
-	defer image.Free()
-	texture, _ := renderer.CreateTextureFromSurface(image)
+	x := rand.Int31n(3) + 9
+	y := rand.Int31n(3) + 0
 
 	return &Grass{
-		Square: &core.Square{
-			X:      0,
-			Y:      0,
-			Width:  32,
-			Height: 32,
+		texture: &core.BoundTexture{
+			Bound:   &sdl.Rect{x * core.Tile, y * core.Tile, core.Tile, core.Tile},
+			Texture: texture,
 		},
-		texture: texture,
 	}
 }
 
-func (g *Grass) Update(d float64) error {
-	return nil
+func (g *Grass) Update(d float64) {
 }
 
-func (g *Grass) Render(d float64) *sdl.Texture {
+func (g *Grass) Render(d float64) *core.BoundTexture {
 	return g.texture
 }
