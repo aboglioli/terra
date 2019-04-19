@@ -2,8 +2,6 @@ package main
 
 import (
 	"github.com/aboglioli/terra/core"
-	"github.com/aboglioli/terra/entity"
-	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -24,25 +22,19 @@ func main() {
 	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
 		switch e.Keysym.Sym {
 		case sdl.K_a:
-			x -= 32
+			x -= 16
 		case sdl.K_d:
-			x += 32
+			x += 16
 		case sdl.K_w:
-			y -= 32
+			y -= 16
 		case sdl.K_s:
-			y += 32
+			y += 16
 		}
 	})
 
 	renderer := core.Renderer()
 
-	var terrain [16][16]*entity.Grass
-
-	for i := 0; i < len(terrain); i++ {
-		for j := 0; j < len(terrain[0]); j++ {
-			terrain[i][j] = entity.NewGrass()
-		}
-	}
+	media := core.Media()
 
 	loop := core.NewLoop(60, func(d float64) {
 		// Clear screen
@@ -50,22 +42,19 @@ func main() {
 		renderer.Clear()
 
 		// Draw terrain
-		for i := (0); i < len(terrain); i++ {
-			for j := 0; j < len(terrain[0]); j++ {
-				grass := terrain[i][j]
-				grassTexture := grass.Render(d)
-				renderer.Copy(grassTexture, &sdl.Rect{0, 0, 32, 32}, &sdl.Rect{int32(i * 32), int32(j * 32), 32, 32})
+		for i := (0); i < 64; i++ {
+			for j := 0; j < 64; j++ {
+				grass := media["grass1"]
+				renderer.Copy(grass.Texture, grass.Bound, &sdl.Rect{int32(i * 16), int32(j * 16), 16, 16})
 			}
 		}
 
-		image, _ := img.Load("./assets/map.png")
-		defer image.Free()
-		texture, _ := renderer.CreateTextureFromSurface(image)
-		renderer.Copy(texture, &sdl.Rect{96, 0, 32, 32}, &sdl.Rect{128, 128, 32, 32})
+		totem := media["totem"]
+		renderer.Copy(totem.Texture, totem.Bound, &sdl.Rect{128, 128, 16, 16})
 
 		// Draw character
 		renderer.SetDrawColor(255, 0, 0, 255)
-		renderer.FillRect(&sdl.Rect{x, y, 32, 32})
+		renderer.FillRect(&sdl.Rect{x, y, 16, 16})
 
 		// Update
 		renderer.Present()
