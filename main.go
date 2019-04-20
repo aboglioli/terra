@@ -12,18 +12,18 @@ func main() {
 
 	events := core.Events()
 
-	var x, y int32 = 0, 0
+	dwarf := entity.NewDwarf()
 
 	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
 		switch e.Keysym.Sym {
 		case sdl.K_a:
-			x -= core.Tile
+			dwarf.X -= core.Tile
 		case sdl.K_d:
-			x += core.Tile
+			dwarf.X += core.Tile
 		case sdl.K_w:
-			y -= core.Tile
+			dwarf.Y -= core.Tile
 		case sdl.K_s:
-			y += core.Tile
+			dwarf.Y += core.Tile
 		}
 	})
 
@@ -32,11 +32,9 @@ func main() {
 	var grasses [60][60]core.Entity
 	for i := 0; i < 60; i++ {
 		for j := 0; j < 60; j++ {
-			grasses[i][j] = entity.NewGrass()
+			grasses[i][j] = entity.NewGrass(i*core.Tile, j*core.Tile)
 		}
 	}
-
-	dwarf := entity.NewDwarf()
 
 	loop := core.NewLoop(60, func(d float64) {
 		// Clear screen
@@ -47,14 +45,12 @@ func main() {
 		for i := 0; i < 60; i++ {
 			for j := 0; j < 60; j++ {
 				grass := grasses[i][j]
-				texture := grass.Render(d)
-				renderer.Copy(texture.Texture, texture.Bound, &sdl.Rect{int32(i * core.Tile), int32(j * core.Tile), core.Tile, core.Tile})
+				grass.Render(renderer)
 			}
 		}
 
 		// Draw character
-		texture := dwarf.Render(d)
-		renderer.Copy(texture.Texture, texture.Bound, &sdl.Rect{x, y, core.Tile, core.Tile})
+		dwarf.Render(renderer)
 
 		// Update
 		renderer.Present()

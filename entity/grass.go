@@ -6,23 +6,24 @@ import (
 )
 
 type Grass struct {
-	texture *core.BoundTexture
+	*core.TexturedRect
 }
 
-func NewGrass() *Grass {
+func NewGrass(x, y int) *Grass {
 	texture, _ := core.Texture("terrain")
 
 	return &Grass{
-		texture: &core.BoundTexture{
-			Bound:   &sdl.Rect{0 * 32, 6 * 32, core.Tile, core.Tile},
-			Texture: texture,
+		&core.TexturedRect{
+			&sdl.Rect{
+				X: int32(x),
+				Y: int32(y),
+				W: core.Tile,
+				H: core.Tile,
+			},
+			&core.BoundTexture{
+				Bound:   &sdl.Rect{0 * 32, 5 * 32, core.Tile, core.Tile},
+				Texture: texture,
+			},
 		},
 	}
-}
-
-func (g *Grass) Update(d float64) {
-}
-
-func (g *Grass) Render(d float64) *core.BoundTexture {
-	return g.texture
 }

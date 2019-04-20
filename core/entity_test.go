@@ -49,12 +49,12 @@ func TestSquare(t *testing.T) {
 		s.width = 128
 
 		if s1.width != 128 {
-			t.Error("Square width should be 128")
+			t.Error("Rect width should be 128")
 		}
 	})
 
 	t.Run("overwrite Render method", func(t *testing.T) {
-		s := &Square2{Square: &Square{64, 64}}
+		s := &Square2{Rect: &Square{64, 64}}
 		err := s.Render(0.1)
 
 		if !renderCalled {

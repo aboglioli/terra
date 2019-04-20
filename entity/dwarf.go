@@ -6,23 +6,24 @@ import (
 )
 
 type Dwarf struct {
-	texture *core.BoundTexture
+	*core.TexturedRect
 }
 
 func NewDwarf() *Dwarf {
 	texture, _ := core.Texture("dwarves")
 
 	return &Dwarf{
-		texture: &core.BoundTexture{
-			Bound:   &sdl.Rect{32, 0, core.Tile, core.Tile},
-			Texture: texture,
+		&core.TexturedRect{
+			&sdl.Rect{
+				X: 0,
+				Y: 0,
+				W: 32,
+				H: 32,
+			},
+			&core.BoundTexture{
+				Bound:   &sdl.Rect{32, 0, core.Tile, core.Tile},
+				Texture: texture,
+			},
 		},
 	}
-}
-
-func (g *Dwarf) Update(d float64) {
-}
-
-func (g *Dwarf) Render(d float64) *core.BoundTexture {
-	return g.texture
 }

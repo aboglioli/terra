@@ -16,7 +16,7 @@ func loadTexture(renderer *sdl.Renderer, path string) (*sdl.Texture, error) {
 func loadTextures(renderer *sdl.Renderer) map[string]*sdl.Texture {
 	m := make(map[string]*sdl.Texture)
 
-	texture, _ := loadTexture(renderer, "./assets/map.png")
+	texture, _ := loadTexture(renderer, "./assets/terrain.png")
 	m["terrain"] = texture
 
 	texture, _ = loadTexture(renderer, "./assets/characters.png")
