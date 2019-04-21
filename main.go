@@ -14,19 +14,6 @@ func main() {
 
 	dwarf := entity.NewDwarf()
 
-	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
-		switch e.Keysym.Sym {
-		case sdl.K_a:
-			dwarf.X -= core.Tile
-		case sdl.K_d:
-			dwarf.X += core.Tile
-		case sdl.K_w:
-			dwarf.Y -= core.Tile
-		case sdl.K_s:
-			dwarf.Y += core.Tile
-		}
-	})
-
 	renderer := core.Renderer()
 
 	var grasses [60][60]core.Entity

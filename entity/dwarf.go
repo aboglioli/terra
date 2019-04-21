@@ -12,7 +12,7 @@ type Dwarf struct {
 func NewDwarf() *Dwarf {
 	texture, _ := core.Texture("dwarves")
 
-	return &Dwarf{
+	dwarf := &Dwarf{
 		&core.TexturedRect{
 			&sdl.Rect{
 				X: 0,
@@ -26,4 +26,21 @@ func NewDwarf() *Dwarf {
 			},
 		},
 	}
+
+	events := core.Events()
+
+	events.AddKeyboardEvent(func(e *sdl.KeyboardEvent) {
+		switch e.Keysym.Sym {
+		case sdl.K_a:
+			dwarf.X -= core.Tile
+		case sdl.K_d:
+			dwarf.X += core.Tile
+		case sdl.K_w:
+			dwarf.Y -= core.Tile
+		case sdl.K_s:
+			dwarf.Y += core.Tile
+		}
+	})
+
+	return dwarf
 }
